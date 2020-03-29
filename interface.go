@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"code.speakin.mobi/infrastructure/logger/v3/core"
+	"logger/v3/core"
 	"context"
 )
 

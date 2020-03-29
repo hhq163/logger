@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"code.speakin.mobi/infrastructure/jaeger_helper"
-	"code.speakin.mobi/infrastructure/logger/v3/core"
+	"github.com/hhq163/jaeger_helper"
+	"logger/v3/core"
 	"github.com/opentracing/opentracing-go"
 	jLog "github.com/opentracing/opentracing-go/log"
 	"go.uber.org/zap"
