@@ -4,8 +4,9 @@ package logger
 
 import (
 	"context"
-	"go.uber.org/zap"
 	"testing"
+
+	"go.uber.org/zap"
 )
 
 func TestGlobalDefaultLogger(t *testing.T) {
@@ -62,16 +63,16 @@ func TestNewDefaultLogger(t *testing.T) {
 	//l.Fatalw("", "k", "test")
 }
 
-func TestNewSpeakinLogger(t *testing.T) {
+func TestNewMyLogger(t *testing.T) {
 
-	prodConf := NewDevelopmentConfig(SvcName, "TestNewSpeakinLogger")
-	l := NewSpeakinLogger(prodConf)
+	prodConf := NewDevelopmentConfig(SvcName, "TestNewMyLogger")
+	l := NewMyLogger(prodConf)
 	l.Info("customary prod info test")
 	l.Infof("customary prod infof %s", "test")
 	l.Infow("customary prod infow", "k", "test")
 
-	devConf := NewDevelopmentConfig(SvcName, "TestNewSpeakinLogger")
-	l2 := NewSpeakinLogger(devConf)
+	devConf := NewDevelopmentConfig(SvcName, "TestNewMyLogger")
+	l2 := NewMyLogger(devConf)
 	l2.Info("customary dev info test")
 	l2.Infof("customary dev infof %s", "test")
 	l2.Infow("customary dev infow", "k", "test")
@@ -80,13 +81,13 @@ func TestNewSpeakinLogger(t *testing.T) {
 func TestChangeLevel(t *testing.T) {
 	conf := NewProductionConfig(SvcName, "TestChangeLevel")
 	conf.Level = DebugLevel
-	l := NewSpeakinLogger(conf)
+	l := NewMyLogger(conf)
 	l.Debug("必须输出")
 }
 
 func TestDynamicChangeLevel(t *testing.T) {
 	conf := NewProductionConfig(SvcName, "TestDynamicChangeLevel")
-	l := NewSpeakinLogger(conf)
+	l := NewMyLogger(conf)
 	l.Debug("test debug 1")
 	l.Info("level:", conf.Level)
 
@@ -98,7 +99,7 @@ func TestDynamicChangeLevel(t *testing.T) {
 
 func TestWithSpan(t *testing.T) {
 	conf := NewProductionConfig(SvcName, "TestWithSpan")
-	l := NewSpeakinLogger(conf)
+	l := NewMyLogger(conf)
 	l.Info("没有 span 时输出")
 	l = l.WithSpan(context.Background())
 	l.Info("有 span 时输出")

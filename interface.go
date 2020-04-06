@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"logger/v3/core"
+	"github.com/hhq163/logger/core"
 	"context"
 )
 

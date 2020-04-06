@@ -1,8 +1,9 @@
 package logger
 
 import (
-	"logger/v3/core"
 	"context"
+
+	"github.com/hhq163/logger/core"
 )
 
 // Global Default Logger
@@ -16,11 +17,11 @@ func init() {
 	var config *Config
 	config = NewProductionConfig()
 	config.CallerSkip = 2
-	l = NewSpeakinLogger(config)
+	l = NewMyLogger(config)
 }
 
 func SetConfig(config *Config) {
-	l = NewSpeakinLogger(config)
+	l = NewMyLogger(config)
 }
 
 // global tag

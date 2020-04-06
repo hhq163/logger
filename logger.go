@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 
 	"github.com/hhq163/jaeger_helper"
-	"logger/v3/core"
+	"github.com/hhq163/logger/core"
 	"github.com/opentracing/opentracing-go"
 	jLog "github.com/opentracing/opentracing-go/log"
 	"go.uber.org/zap"
