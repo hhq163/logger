@@ -25,6 +25,10 @@ func (s *MyLogger) SetLevel(level core.Level) {
 	s.conf.zapBaseConf.Level.SetLevel(zapcore.Level(level))
 }
 
+func (s *MyLogger) GetLevel()core.Level{
+	return s.conf.Level
+}
+
 func (s *MyLogger) With(args ...interface{}) Logger {
 	newLogger := *s
 	newLogger.base = newLogger.base.With(args...)
