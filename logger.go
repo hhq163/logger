@@ -3,7 +3,6 @@ package logger
 import (
 	"context"
 	"fmt"
-	"runtime/debug"
 
 	"github.com/hhq163/jaeger_helper"
 	"github.com/hhq163/logger/core"
@@ -302,16 +301,16 @@ func NewMyLogger(config *Config) Logger {
 	zapLogger = zapLogger.WithOptions(zap.AddCallerSkip(config.CallerSkip))
 	config.zapBaseConf = zapConfig
 
-	info, ok := debug.ReadBuildInfo()
-	if ok == false {
-		fmt.Println("use logger without go module")
-	} else {
-		if ReplaceModuleVersion != "" {
-			zapLogger = zapLogger.With(zap.String(LabelModuleName, info.Main.Path+" "+ReplaceModuleVersion))
-		} else {
-			zapLogger = zapLogger.With(zap.String(LabelModuleName, info.Main.Path+" "+info.Main.Version))
-		}
-	}
+	// info, ok := debug.ReadBuildInfo()
+	// if ok == false {
+	// 	fmt.Println("use logger without go module")
+	// } else {
+	// 	if ReplaceModuleVersion != "" {
+	// 		zapLogger = zapLogger.With(zap.String(LabelModuleName, info.Main.Path+" "+ReplaceModuleVersion))
+	// 	} else {
+	// 		zapLogger = zapLogger.With(zap.String(LabelModuleName, info.Main.Path+" "+info.Main.Version))
+	// 	}
+	// }
 
 	spkLogger := &MyLogger{
 		base: zapLogger.Sugar(),
