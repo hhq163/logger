@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hhq163/jaeger_helper"
 	"github.com/hhq163/logger/core"
 	"github.com/opentracing/opentracing-go"
 	jLog "github.com/opentracing/opentracing-go/log"
@@ -256,14 +255,6 @@ func (s *MyLogger) WithSpan(ctx context.Context) Logger {
 
 func (s *MyLogger) WithCtx(ctx context.Context) Logger {
 	var newLogger Logger = s
-	if span := jaeger_helper.SpanFromContext(ctx); span != nil {
-		sInstance := *s
-		sInstance.span = span
-		newLogger = &sInstance
-	}
-	if tID := GetTraceID(ctx); tID != "" {
-		newLogger = newLogger.With(TraceID, tID)
-	}
 
 	return newLogger
 }
@@ -304,17 +295,6 @@ func NewMyLogger(config *Config) Logger {
 	}
 	zapLogger = zapLogger.WithOptions(zap.AddCallerSkip(config.CallerSkip))
 	config.zapBaseConf = zapConfig
-
-	// info, ok := debug.ReadBuildInfo()
-	// if ok == false {
-	// 	fmt.Println("use logger without go module")
-	// } else {
-	// 	if ReplaceModuleVersion != "" {
-	// 		zapLogger = zapLogger.With(zap.String(LabelModuleName, info.Main.Path+" "+ReplaceModuleVersion))
-	// 	} else {
-	// 		zapLogger = zapLogger.With(zap.String(LabelModuleName, info.Main.Path+" "+info.Main.Version))
-	// 	}
-	// }
 
 	spkLogger := &MyLogger{
 		base: zapLogger.Sugar(),

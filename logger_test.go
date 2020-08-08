@@ -23,16 +23,6 @@ func TestGlobalDefaultLogger(t *testing.T) {
 	Errorf("%s", "test")
 	Errorw("", "k", "test")
 
-	//DPanic("test")
-	//DPanicf("%s", "test")
-	//DPanicw("", "k", "test")
-	//Panic("test")
-	//Panicf("%s", "test")
-	//Panicw("", "k", "test")
-	//Fatal("test")
-	//Fatalf("%s", "test")
-	//Fatalw("", "k", "test")
-
 	Debug("默认级别，不会输出")
 	SetLevel(DebugLevel)
 	Debug("修改级别后的输出")
@@ -55,27 +45,24 @@ func TestNewDefaultLogger(t *testing.T) {
 	l.DPanic("test")
 	l.DPanicf("%s", "test")
 	l.DPanicw("", "k", "test")
-	//l.Panic("test")
-	//l.Panicf("%s", "test")
-	//l.Panicw("", "k", "test")
-	//l.Fatal("test")
-	//l.Fatalf("%s", "test")
-	//l.Fatalw("", "k", "test")
 }
 
 func TestNewMyLogger(t *testing.T) {
 
-	prodConf := NewDevelopmentConfig(SvcName, "TestNewMyLogger")
-	l := NewMyLogger(prodConf)
+	cfg := logger.NewDevelopmentConfig()
+	cfg.OutputPaths = append(cfg.OutputPaths, "access_log.txt")//指定输出文件名
+	l = logger.NewMyLogger(cfg)
+
 	l.Info("customary prod info test")
 	l.Infof("customary prod infof %s", "test")
 	l.Infow("customary prod infow", "k", "test")
 
+
 	devConf := NewDevelopmentConfig(SvcName, "TestNewMyLogger")
+	devConf.Encoding = "json"		//指定输出格式为json，key=>val有利于ELK搜集
+	devConf.OutputPaths = append(cfg.OutputPaths, "access_log.txt")//指定输出文件名
 	l2 := NewMyLogger(devConf)
-	l2.Info("customary dev info test")
-	l2.Infof("customary dev infof %s", "test")
-	l2.Infow("customary dev infow", "k", "test")
+	l2.Info("key1","customary dev info test")
 }
 
 func TestChangeLevel(t *testing.T) {
@@ -131,9 +118,4 @@ func TestCommonLogger(t *testing.T) {
 	config.DisableStacktrace = true
 	SetConfig(config)
 	Error("error test without stacktrace and caller")
-}
-
-func TestWithCtx(t *testing.T) {
-	ctx := context.WithValue(context.Background(), TraceID, "123")
-	l.WithCtx(ctx).Info("test context with trace")
 }
