@@ -23,7 +23,7 @@ func (s *MyLogger) SetLevel(level core.Level) {
 	s.conf.zapBaseConf.Level.SetLevel(zapcore.Level(level))
 }
 
-func (s *MyLogger) GetLevel()core.Level{
+func (s *MyLogger) GetLevel() core.Level {
 	return s.conf.Level
 }
 
@@ -296,10 +296,10 @@ func NewMyLogger(config *Config) Logger {
 	zapLogger = zapLogger.WithOptions(zap.AddCallerSkip(config.CallerSkip))
 	config.zapBaseConf = zapConfig
 
-	spkLogger := &MyLogger{
+	myLogger := &MyLogger{
 		base: zapLogger.Sugar(),
 		conf: config,
 	}
 
-	return spkLogger
+	return myLogger
 }
