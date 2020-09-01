@@ -49,20 +49,19 @@ func TestNewDefaultLogger(t *testing.T) {
 
 func TestNewMyLogger(t *testing.T) {
 
-	cfg := logger.NewDevelopmentConfig()
-	cfg.OutputPaths = append(cfg.OutputPaths, "access_log.txt")//指定输出文件名
-	l = logger.NewMyLogger(cfg)
+	cfg := NewDevelopmentConfig()
+	cfg.OutputPaths = append(cfg.OutputPaths, "access_log.txt") //指定输出文件名
+	l = NewMyLogger(cfg)
 
 	l.Info("customary prod info test")
 	l.Infof("customary prod infof %s", "test")
 	l.Infow("customary prod infow", "k", "test")
 
-
 	devConf := NewDevelopmentConfig(SvcName, "TestNewMyLogger")
-	devConf.Encoding = "json"		//指定输出格式为json，key=>val有利于ELK搜集
-	devConf.OutputPaths = append(cfg.OutputPaths, "access_log.txt")//指定输出文件名
+	devConf.Encoding = "json"                                       //指定输出格式为json，key=>val有利于ELK搜集
+	devConf.OutputPaths = append(cfg.OutputPaths, "access_log.txt") //指定输出文件名
 	l2 := NewMyLogger(devConf)
-	l2.Info("key1","customary dev info test")
+	l2.Info("key1", "customary dev info test")
 }
 
 func TestChangeLevel(t *testing.T) {
@@ -118,4 +117,16 @@ func TestCommonLogger(t *testing.T) {
 	config.DisableStacktrace = true
 	SetConfig(config)
 	Error("error test without stacktrace and caller")
+}
+
+func TestCuttingLogger(t *testing.T) {
+	config := NewDevelopmentConfig()
+	config.Filename = "./test.log"
+	SetConfig(config)
+
+	for i := 0; i < 100000; i++ {
+		Debug("debug test, error test without stacktrace and caller:", i)
+		Info("error test, error test without stacktrace and caller, error test without stacktrace and caller, error test without stacktrace and caller:", i)
+		Info("error test without stacktrace and caller, error test without stacktrace and callererror test without stacktrace and callererror test without stacktrace and callererror test without stacktrace and callererror test without stacktrace and callererror test without stacktrace and caller, error test without stacktrace and caller :", i)
+	}
 }

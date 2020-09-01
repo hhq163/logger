@@ -18,10 +18,12 @@ func init() {
 	config = NewProductionConfig()
 	config.CallerSkip = 2
 	l = NewMyLogger(config)
+	// l = NewCuttingLogger(config)
 }
 
 func SetConfig(config *Config) {
 	l = NewMyLogger(config)
+	// l = NewCuttingLogger(config)
 }
 
 // global tag

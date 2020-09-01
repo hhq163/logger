@@ -35,6 +35,21 @@ type Config struct {
 
 	// 用来跳到父级 caller 调用者，一般设置为 1 即可
 	CallerSkip int
+
+	Filename string
+
+	//file biggest size unit：M
+	MaxSize int
+
+	// the number of backup files
+	MaxBackups int
+
+	// the deadline of log file
+	MaxAge int
+
+	// compress or not
+	Compress bool
+
 	// 底层日志库的 conf 暴露出来，方便一些特殊操作
 	zapBaseConf *zap.Config
 }

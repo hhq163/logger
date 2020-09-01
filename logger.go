@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hhq163/logger/core"
+	"github.com/natefinch/lumberjack"
 	"github.com/opentracing/opentracing-go"
 	jLog "github.com/opentracing/opentracing-go/log"
 	"go.uber.org/zap"
@@ -302,4 +303,41 @@ func NewMyLogger(config *Config) Logger {
 	}
 
 	return myLogger
+}
+
+func NewCuttingLogger(config *Config) Logger {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	encoder := zapcore.NewConsoleEncoder(encoderConfig)
+
+	if config.Filename == "" {
+		config.Filename = "./access.log"
+	}
+	if config.MaxSize == 0 {
+		config.MaxSize = 100
+	}
+	if config.MaxAge == 0 {
+		config.MaxAge = 10
+	}
+	if config.MaxBackups == 0 {
+		config.MaxBackups = 5
+	}
+	ljLogger := &lumberjack.Logger{
+		Filename:   config.Filename,
+		MaxSize:    config.MaxSize,
+		MaxBackups: config.MaxBackups,
+		MaxAge:     config.MaxAge,
+		Compress:   config.Compress,
+	}
+	writeSyncer := zapcore.AddSync(ljLogger)
+
+	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
+	zapLogger := zap.New(core, zap.AddCaller())
+
+	cuttingLogger := &MyLogger{
+		base: zapLogger.Sugar(),
+		conf: config,
+	}
+	return cuttingLogger
 }
