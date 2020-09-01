@@ -8,4 +8,6 @@
 + 普通调试日志：  
 2019-08-21T17:35:01.736+0800	debug	impl/impl.go:19	gateway NewImpl begin
 
-2.支持udp协议上传到elk  
+2.支持日志文件切割，如果服务器单点部署时，会用到日志文件切割。
+
+3.支持udp协议上传到elk  
