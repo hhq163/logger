@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"github.com/hhq163/logger/core"
 	"context"
+	"github.com/hhq163/logger/core"
 )
 
 // 通用日志接口定义

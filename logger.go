@@ -306,9 +306,15 @@ func NewMyLogger(config *Config) Logger {
 }
 
 func NewCuttingLogger(config *Config) Logger {
-	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig := zap.NewDevelopmentEncoderConfig()
+
+	if config.EncoderConfig.TimeFormat == TimeFormat_ISO8601 {
+		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	}
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	// if config.EncoderConfig.EncodeCaller == FullPathCaller {
+	encoderConfig.EncodeCaller = zapcore.FullCallerEncoder
+	// }
 	encoder := zapcore.NewConsoleEncoder(encoderConfig)
 
 	if config.Filename == "" {
