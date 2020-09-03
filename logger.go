@@ -312,9 +312,10 @@ func NewCuttingLogger(config *Config) Logger {
 		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	}
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	// if config.EncoderConfig.EncodeCaller == FullPathCaller {
-	encoderConfig.EncodeCaller = zapcore.FullCallerEncoder
-	// }
+
+	if config.EncoderConfig.EncodeCaller == FullPathCaller {
+		encoderConfig.EncodeCaller = zapcore.FullCallerEncoder
+	}
 	encoder := zapcore.NewConsoleEncoder(encoderConfig)
 
 	if config.Filename == "" {
@@ -339,7 +340,7 @@ func NewCuttingLogger(config *Config) Logger {
 	writeSyncer := zapcore.AddSync(ljLogger)
 
 	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
-	zapLogger := zap.New(core, zap.AddCaller())
+	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 
 	cuttingLogger := &MyLogger{
 		base: zapLogger.Sugar(),
