@@ -33,6 +33,9 @@ type Config struct {
 	// InitialFields is a collection of fields to add to the root logger.
 	InitialFields map[string]interface{} `json:"initialFields" yaml:"initialFields"`
 
+	//日志采集服务端URL，TCP或UDP均可，如192.168.5.68:6000
+	HostURL string
+
 	// 用来跳到父级 caller 调用者，一般设置为 1 即可
 	CallerSkip int
 

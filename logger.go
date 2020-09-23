@@ -3,6 +3,7 @@ package logger
 import (
 	"context"
 	"fmt"
+	"net"
 
 	"github.com/hhq163/logger/core"
 	"github.com/natefinch/lumberjack"
@@ -338,6 +339,42 @@ func NewCuttingLogger(config *Config) Logger {
 		Compress:   config.Compress,
 	}
 	writeSyncer := zapcore.AddSync(ljLogger)
+
+	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
+	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
+
+	cuttingLogger := &MyLogger{
+		base: zapLogger.Sugar(),
+		conf: config,
+	}
+	return cuttingLogger
+}
+
+func NewUdpLogger(config *Config) Logger {
+	encoderConfig := zap.NewDevelopmentEncoderConfig()
+
+	if config.EncoderConfig.TimeFormat == TimeFormat_ISO8601 {
+		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	}
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+
+	if config.EncoderConfig.EncodeCaller == FullPathCaller {
+		encoderConfig.EncodeCaller = zapcore.FullCallerEncoder
+	}
+	encoder := zapcore.NewConsoleEncoder(encoderConfig)
+
+	remote, err := net.ResolveUDPAddr("udp", config.HostURL)
+	if err != nil {
+		fmt.Println("net.ResolveUDPAddr error!", err.Error())
+		panic(err)
+	}
+	conn, err := net.DialUDP("udp", nil, remote)
+	if err != nil {
+		fmt.Println("net.DialUDP error!", err.Error())
+		panic(err)
+	}
+
+	writeSyncer := zapcore.AddSync(conn)
 
 	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
