@@ -2,12 +2,14 @@ package logger
 
 import (
 	"context"
+
 	"github.com/hhq163/logger/core"
 )
 
 // 通用日志接口定义
 type Logger interface {
 	SetLevel(level core.Level)
+	GetLevel() core.Level
 
 	With(args ...interface{}) Logger
 
