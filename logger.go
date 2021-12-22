@@ -3,7 +3,6 @@ package logger
 import (
 	"context"
 	"fmt"
-	"net"
 
 	"github.com/hhq163/logger/core"
 	"github.com/natefinch/lumberjack"
@@ -14,15 +13,16 @@ import (
 )
 
 type MyLogger struct {
-	conf *Config
-	base *zap.SugaredLogger
-	span opentracing.Span
+	conf  *Config
+	level *zap.AtomicLevel
+	base  *zap.SugaredLogger
+	span  opentracing.Span
 }
 
 func (s *MyLogger) SetLevel(level core.Level) {
 	// TODO 关联顶层 config 和内部的底层 config
 	s.conf.Level = level
-	s.conf.zapBaseConf.Level.SetLevel(zapcore.Level(level))
+	s.level.SetLevel(zapcore.Level(int8(level)))
 }
 
 func (s *MyLogger) GetLevel() core.Level {
@@ -299,8 +299,9 @@ func NewMyLogger(config *Config) Logger {
 	config.zapBaseConf = zapConfig
 
 	myLogger := &MyLogger{
-		base: zapLogger.Sugar(),
-		conf: config,
+		base:  zapLogger.Sugar(),
+		conf:  config,
+		level: &zapConfig.Level,
 	}
 
 	return myLogger
@@ -331,6 +332,7 @@ func NewCuttingLogger(config *Config) Logger {
 	if config.MaxBackups == 0 {
 		config.MaxBackups = 5
 	}
+
 	ljLogger := &lumberjack.Logger{
 		Filename:   config.Filename,
 		MaxSize:    config.MaxSize,
@@ -340,48 +342,16 @@ func NewCuttingLogger(config *Config) Logger {
 	}
 	writeSyncer := zapcore.AddSync(ljLogger)
 
-	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
+	loggerLevel := &zap.AtomicLevel{}
+	loggerLevel.SetLevel(zapcore.DebugLevel)
+
+	core := zapcore.NewCore(encoder, writeSyncer, loggerLevel)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
 
 	cuttingLogger := &MyLogger{
-		base: zapLogger.Sugar(),
-		conf: config,
-	}
-	return cuttingLogger
-}
-
-func NewUdpLogger(config *Config) Logger {
-	encoderConfig := zap.NewDevelopmentEncoderConfig()
-
-	if config.EncoderConfig.TimeFormat == TimeFormat_ISO8601 {
-		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	}
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-
-	if config.EncoderConfig.EncodeCaller == FullPathCaller {
-		encoderConfig.EncodeCaller = zapcore.FullCallerEncoder
-	}
-	encoder := zapcore.NewConsoleEncoder(encoderConfig)
-
-	remote, err := net.ResolveUDPAddr("udp", config.HostURL)
-	if err != nil {
-		fmt.Println("net.ResolveUDPAddr error!", err.Error())
-		panic(err)
-	}
-	conn, err := net.DialUDP("udp", nil, remote)
-	if err != nil {
-		fmt.Println("net.DialUDP error!", err.Error())
-		panic(err)
-	}
-
-	writeSyncer := zapcore.AddSync(conn)
-
-	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
-	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
-
-	cuttingLogger := &MyLogger{
-		base: zapLogger.Sugar(),
-		conf: config,
+		base:  zapLogger.Sugar(),
+		conf:  config,
+		level: loggerLevel,
 	}
 	return cuttingLogger
 }
