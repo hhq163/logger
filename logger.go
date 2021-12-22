@@ -8,6 +8,7 @@ import (
 	"github.com/natefinch/lumberjack"
 	"github.com/opentracing/opentracing-go"
 	jLog "github.com/opentracing/opentracing-go/log"
+	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -342,8 +343,8 @@ func NewCuttingLogger(config *Config) Logger {
 	}
 	writeSyncer := zapcore.AddSync(ljLogger)
 
-	loggerLevel := &zap.AtomicLevel{}
-	loggerLevel.SetLevel(zapcore.DebugLevel)
+	loggerLevel := &zap.AtomicLevel{l: atomic.NewInt32(int32(zapcore.DebugLevel))}
+	// loggerLevel.SetLevel(zapcore.DebugLevel)
 
 	core := zapcore.NewCore(encoder, writeSyncer, loggerLevel)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
