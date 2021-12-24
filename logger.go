@@ -342,7 +342,7 @@ func NewCuttingLogger(config *Config) Logger {
 	}
 	writeSyncer := zapcore.AddSync(ljLogger)
 
-	loggerLevel := zap.NewAtomicLevelAt(zapcore.DebugLevel)
+	loggerLevel := zap.NewAtomicLevelAt(zapcore.Level(config.Level))
 
 	core := zapcore.NewCore(encoder, writeSyncer, &loggerLevel)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
