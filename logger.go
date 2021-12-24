@@ -330,7 +330,7 @@ func NewCuttingLogger(config *Config) Logger {
 		config.MaxAge = 10
 	}
 	if config.MaxBackups == 0 {
-		config.MaxBackups = 5
+		config.MaxBackups = 20
 	}
 
 	ljLogger := &lumberjack.Logger{
@@ -343,8 +343,6 @@ func NewCuttingLogger(config *Config) Logger {
 	writeSyncer := zapcore.AddSync(ljLogger)
 
 	loggerLevel := zap.NewAtomicLevelAt(zapcore.DebugLevel)
-	// NewAtomicLevel()
-	// loggerLevel.SetLevel(zapcore.DebugLevel)
 
 	core := zapcore.NewCore(encoder, writeSyncer, &loggerLevel)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(config.CallerSkip))
