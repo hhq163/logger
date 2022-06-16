@@ -42,7 +42,9 @@ func (s *MyLogger) Debug(args ...interface{}) {
 			jLog.String("event", fmt.Sprint(args...)),
 		)
 	}
-	s.base.Debug(args...)
+
+	s.base.Debug(fmt.Sprintf("<font color='#000000'>%s<br></font>", fmt.Sprint(args...)))
+	// s.base.Debug(args...)
 }
 
 func (s *MyLogger) Info(args ...interface{}) {
@@ -52,7 +54,8 @@ func (s *MyLogger) Info(args ...interface{}) {
 			jLog.String("event", fmt.Sprint(args...)),
 		)
 	}
-	s.base.Info(args...)
+	s.base.Debug(fmt.Sprintf("<font color='#0000FF'>%s<br></font>", fmt.Sprint(args...)))
+	// s.base.Info(args...)
 }
 
 func (s *MyLogger) Warn(args ...interface{}) {
@@ -62,7 +65,8 @@ func (s *MyLogger) Warn(args ...interface{}) {
 			jLog.String("event", fmt.Sprint(args...)),
 		)
 	}
-	s.base.Warn(args...)
+	s.base.Debug(fmt.Sprintf("<font color='#FF00FF'>%s<br></font>", fmt.Sprint(args...)))
+	// s.base.Warn(args...)
 }
 
 func (s *MyLogger) Error(args ...interface{}) {
@@ -72,7 +76,8 @@ func (s *MyLogger) Error(args ...interface{}) {
 			jLog.String("event", fmt.Sprint(args...)),
 		)
 	}
-	s.base.Error(args...)
+	s.base.Debug(fmt.Sprintf("<font color='#FF0000'>%s<br></font>", fmt.Sprint(args...)))
+	// s.base.Error(args...)
 }
 
 func (s *MyLogger) DPanic(args ...interface{}) {
@@ -102,7 +107,8 @@ func (s *MyLogger) Fatal(args ...interface{}) {
 			jLog.String("event", fmt.Sprint(args...)),
 		)
 	}
-	s.base.Fatal(args...)
+	s.base.Debug(fmt.Sprintf("<font color='#8B0000'>%s<br></font>", fmt.Sprint(args...)))
+	// s.base.Fatal(args...)
 }
 
 func (s *MyLogger) Debugf(template string, args ...interface{}) {
@@ -112,7 +118,9 @@ func (s *MyLogger) Debugf(template string, args ...interface{}) {
 			jLog.String("event", fmt.Sprintf(template, args...)),
 		)
 	}
-	s.base.Debugf(template, args...)
+
+	s.base.Debugf("<font color='#000000'>%s<br></font>", fmt.Sprintf(template, args...))
+	// s.base.Debugf(template, args...)
 }
 
 func (s *MyLogger) Infof(template string, args ...interface{}) {
@@ -122,7 +130,8 @@ func (s *MyLogger) Infof(template string, args ...interface{}) {
 			jLog.String("event", fmt.Sprintf(template, args...)),
 		)
 	}
-	s.base.Infof(template, args...)
+	s.base.Infof("<font color='#0000FF'>%s<br></font>", fmt.Sprintf(template, args...))
+	// s.base.Infof(template, args...)
 }
 
 func (s *MyLogger) Warnf(template string, args ...interface{}) {
@@ -132,7 +141,8 @@ func (s *MyLogger) Warnf(template string, args ...interface{}) {
 			jLog.String("event", fmt.Sprintf(template, args...)),
 		)
 	}
-	s.base.Warnf(template, args...)
+	s.base.Warnf("<font color='#FF00FF'>%s<br></font>", fmt.Sprintf(template, args...))
+	// s.base.Warnf(template, args...)
 
 }
 
@@ -143,7 +153,8 @@ func (s *MyLogger) Errorf(template string, args ...interface{}) {
 			jLog.String("event", fmt.Sprintf(template, args...)),
 		)
 	}
-	s.base.Errorf(template, args...)
+	s.base.Errorf("<font color='#FF0000'>%s<br></font>", fmt.Sprintf(template, args...))
+	// s.base.Errorf(template, args...)
 }
 
 func (s *MyLogger) DPanicf(template string, args ...interface{}) {
@@ -153,6 +164,7 @@ func (s *MyLogger) DPanicf(template string, args ...interface{}) {
 			jLog.String("event", fmt.Sprintf(template, args...)),
 		)
 	}
+
 	s.base.DPanicf(template, args...)
 }
 
@@ -173,7 +185,8 @@ func (s *MyLogger) Fatalf(template string, args ...interface{}) {
 			jLog.String("event", fmt.Sprintf(template, args...)),
 		)
 	}
-	s.base.Fatalf(template, args...)
+	s.base.Fatalf("<font color='#8B0000'>%s<br></font>", fmt.Sprintf(template, args...))
+	// s.base.Fatalf(template, args...)
 }
 
 func (s *MyLogger) Debugw(msg string, keysAndValues ...interface{}) {
