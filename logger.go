@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/hhq163/logger/core"
 	"github.com/natefinch/lumberjack"
@@ -322,9 +323,7 @@ func NewMyLogger(config *Config) Logger {
 func NewCuttingLogger(config *Config) Logger {
 	encoderConfig := zap.NewDevelopmentEncoderConfig()
 
-	if config.EncoderConfig.TimeFormat == TimeFormat_ISO8601 {
-		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	}
+	encoderConfig.EncodeTime = cEncodeTime
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 
 	if config.EncoderConfig.EncodeCaller == FullPathCaller {
@@ -363,12 +362,18 @@ func NewCuttingLogger(config *Config) Logger {
 	return cuttingLogger
 }
 
+// cEncodeTime 自定义时间格式显示
+func cEncodeTime(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString("[" + t.Format("20060102 15:04:05") + "]")
+}
+
 func NewUdpLogger(config *Config) Logger {
 	encoderConfig := zap.NewDevelopmentEncoderConfig()
 
-	if config.EncoderConfig.TimeFormat == TimeFormat_ISO8601 {
-		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	}
+	// if config.EncoderConfig.TimeFormat == TimeFormat_ISO8601 {
+	// 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	// }
+	encoderConfig.EncodeTime = cEncodeTime
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 
 	if config.EncoderConfig.EncodeCaller == FullPathCaller {
